@@ -90,6 +90,10 @@ function M.render_todo_gui_force(force)
     end
 end
 
+local function render_todo_gui_player_index_event(event)
+    M.render_todo_gui_player(game.players[event.player_index])
+end
+
 script.on_event(defines.events.on_gui_selection_state_changed, function(event)
     if event.element.name == "tag_list" then
         local player = game.players[event.player_index]
@@ -102,9 +106,7 @@ script.on_event(defines.events.on_gui_selection_state_changed, function(event)
     end
 end)
 
-script.on_event(defines.events.on_player_joined_game, function(event)
-    local player = game.players[event.player_index]
-    M.render_todo_gui_player(player)
-end)
+script.on_event(defines.events.on_player_joined_game, render_todo_gui_player_index_event)
+script.on_event(defines.events.on_player_changed_force, render_todo_gui_player_index_event)
 
 return M
