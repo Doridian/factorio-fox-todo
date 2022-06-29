@@ -14,6 +14,10 @@ local function signal_id_to_rich_text(signal_id)
     return "[" .. rt_type .. "="  .. signal_id.name .. "]"
 end
 
+local function get_tag_caption(tag)
+    return signal_id_to_rich_text(tag.icon) .. " " .. tag.text
+end
+
 local function go_to_position(player, name, position, surface_index)
     if remote.interfaces["space-exploration"] then
         local remote_view_allowed = remote.call("space-exploration", "remote_view_is_unlocked", {player=player})
@@ -45,32 +49,62 @@ function M.render_todo_gui_player(player)
         global.player_gui[player.index] = player_gui_config
     end
 
-    if player_gui_config.closed then
-        return
-    end
-
     if not player.gui.screen.fox_todo_main_gui then
         local main_gui = player.gui.screen.add{type="frame", name="fox_todo_main_gui", caption={"gui.todo-list-title"}}
-        main_gui.style.size = {385, 165}
+        main_gui.style.size = {400, 200}
         main_gui.auto_center = false
+        main_gui.visible = false
         main_gui.add{type="list-box", name="tag_list"}
     end
 
-    local tag_list = player.gui.screen.fox_todo_main_gui.tag_list
-    tag_list.clear_items()
-    player_gui_config.item_tags = {}
+    local gui_tag_list = player.gui.screen.fox_todo_main_gui.tag_list
 
     if not tags then
-        -- TODO: put notice here
+        gui_tag_list.clear_items()
+        player_gui_config.item_tags = {}
         return
     end
 
-
-    for tag_number, tag in pairs(tags) do
-        local caption = signal_id_to_rich_text(tag.icon) .. " " .. tag.text
-        tag_list.add_item(caption)
-        table.insert(player_gui_config.item_tags, tag)
+    local old_tags = {}
+    for idx, tag in pairs(player_gui_config.item_tags) do
+        old_tags[tag.tag_number] = idx
     end
+
+    local added_tags = {}
+    local present_tags = {}
+    for tag_number, tag in pairs(tags) do
+        if not old_tags[tag_number] then
+            added_tags[tag_number] = tag
+        end
+        present_tags[tag_number] = tag
+    end
+
+    local new_item_tags = {}
+    local new_items = {}
+    
+    for idx, tag in pairs(player_gui_config.item_tags) do
+        if present_tags[tag.tag_number] then
+            table.insert(new_item_tags, tag)
+            table.insert(new_items, get_tag_caption(tag))
+        end
+    end
+    for tag_number, tag in pairs(added_tags) do
+        table.insert(new_item_tags, tag)
+        table.insert(new_items, get_tag_caption(tag))
+    end
+
+    gui_tag_list.items = new_items
+    player_gui_config.item_tags = new_item_tags
+end
+
+function M.toggle_todo_gui_player(player)
+    local player_gui_config = global.player_gui[player.index]
+    
+    if not player.gui.screen.fox_todo_main_gui then
+        return M.render_todo_gui_player(player)
+    end
+
+    player.gui.screen.fox_todo_main_gui.visible = not player.gui.screen.fox_todo_main_gui.visible
 end
 
 function M.render_todo_gui_force(force)
@@ -95,6 +129,12 @@ script.on_event(defines.events.on_gui_selection_state_changed, function(event)
         end
         event.element.selected_index = 0
     end
+end)
+
+
+script.on_event("fox-todo-toggle-gui", function(event)
+    local player = game.players[event.player_index]
+    M.toggle_todo_gui_player(player)
 end)
 
 script.on_event(defines.events.on_player_joined_game, render_todo_gui_player_index_event)

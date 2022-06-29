@@ -16,7 +16,7 @@ local function on_tag_added(tag, force)
         all_todo_tags_by_force[force.index] = {}
     end
     all_todo_tags_by_force[force.index][tag.tag_number] = tag
-    render_todo_gui_force(force)
+    gui.render_todo_gui_force(force)
 end
 
 local function on_tag_removed(tag, force)
@@ -29,7 +29,7 @@ local function on_tag_removed(tag, force)
         if not next(all_todo_tags_by_force[force.index]) then
             all_todo_tags_by_force[force.index] = nil
         end
-        render_todo_gui_force(force)
+        gui.render_todo_gui_force(force)
     end
 end
 
