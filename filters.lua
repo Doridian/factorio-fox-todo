@@ -13,4 +13,28 @@ function M.get_filter(name)
     return all_filters[name]
 end
 
+function M.set_filters_for(player, filter_names)
+    global.player_filters[player.index] = filter_names
+end
+
+function M.get_filters_for(player, resolve)
+    local filter_names = global.player_filters[player.index]
+    if not filter_names then
+        return {}
+    end
+    
+    if not resolve then
+        return filter_names
+    end
+
+    local filters = {}
+    for _, name in pairs(filter_names) do
+        local filter = M.get_filter(name)
+        if filter then
+            table.insert(filters, filter)
+        end
+    end
+    return filters
+end
+
 return M
