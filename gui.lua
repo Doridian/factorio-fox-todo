@@ -33,7 +33,7 @@ local function go_to_position(player, name, position, surface_index)
         if remote_view_allowed or surface_index ~= player.surface.index then
             local zone = remote.call("space-exploration", "get_zone_from_surface_index", {surface_index=surface_index})
             if not zone then
-                player.print("Could not find zone for given surface! THIS IS A BUG!")
+                player.print({"se-no-zone-for-surface"})
                 return
             end
             remote.call("space-exploration", "remote_view_start", {player=player, position=position, zone_name=zone.name, location_name=name, freeze_history=true})
@@ -42,7 +42,7 @@ local function go_to_position(player, name, position, surface_index)
     end
 
     if surface_index ~= player.surface.index then
-        player.print("Can not show map on different surface than the one you are on!")
+        player.print({"require-same-surface-map"})
         return
     end
 
