@@ -1,0 +1,9 @@
+{
+    "name": "fox-todo",
+    "version": "0.0.1",
+    "title": "Fox TODO",
+    "author": "Doridian",
+    "factorio_version": "1.1",
+    "dependencies": ["base >= 1.1", "(?) space-exploration >= 0.5"],
+    "description": "This mod gives you a GUI to show all TODO style map tags"
+}
