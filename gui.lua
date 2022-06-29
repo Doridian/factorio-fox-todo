@@ -15,7 +15,7 @@ local function signal_id_to_rich_text(signal_id)
 end
 
 local function get_tag_caption(tag)
-    return signal_id_to_rich_text(tag.icon) .. " " .. tag.text
+    return signal_id_to_rich_text(tag.icon) .. " " .. tag.text .. " [color=yellow] by " .. tag.last_user.name .. "[/color]"
 end
 
 local function go_to_position(player, name, position, surface_index)
@@ -130,7 +130,6 @@ script.on_event(defines.events.on_gui_selection_state_changed, function(event)
         event.element.selected_index = 0
     end
 end)
-
 
 script.on_event("fox-todo-toggle-gui", function(event)
     local player = game.players[event.player_index]
