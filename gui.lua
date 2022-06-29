@@ -82,13 +82,13 @@ function M.render_todo_gui_player(player)
     local new_item_tags = {}
     local new_items = {}
     
-    for idx, tag in pairs(player_gui_config.item_tags) do
+    for _, tag in pairs(player_gui_config.item_tags) do
         if present_tags[tag.tag_number] then
             table.insert(new_item_tags, tag)
             table.insert(new_items, get_tag_caption(tag))
         end
     end
-    for tag_number, tag in pairs(added_tags) do
+    for _, tag in pairs(added_tags) do
         table.insert(new_item_tags, tag)
         table.insert(new_items, get_tag_caption(tag))
     end
