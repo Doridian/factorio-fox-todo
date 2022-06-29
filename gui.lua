@@ -14,19 +14,6 @@ local function signal_id_to_rich_text(signal_id)
     return "[" .. rt_type .. "="  .. signal_id.name .. "]"
 end
 
-local function tag_to_gps_tag(tag)
-    -- Technically invalid GPS tag, but it works for our purposes
-    return "[gps=" .. tostring(tag.position.x) .. "," .. tostring(tag.position.y) .. "," .. tostring(tag.surface.index) .. "]"
-end
-
-local function list_item_extract_gps_tag_info(text)
-    local x, y, surface = text:match("%[gps=([^%],]+),([^%],]+),([^%],]+)%]")
-    if x == nil or y == nil or surface == nil then
-        return
-    end
-    return {x = tonumber(x),  y = tonumber(y)}, tonumber(surface)
-end
-
 local function go_to_position(player, name, position, surface_index)
     if remote.interfaces["space-exploration"] then
         local remote_view_allowed = remote.call("space-exploration", "remote_view_is_unlocked", {player=player})
@@ -71,6 +58,7 @@ function M.render_todo_gui_player(player)
 
     local tag_list = player.gui.screen.fox_todo_main_gui.tag_list
     tag_list.clear_items()
+    player_gui_config.item_tags = {}
 
     if not tags then
         -- TODO: put notice here
@@ -79,8 +67,9 @@ function M.render_todo_gui_player(player)
 
 
     for tag_number, tag in pairs(tags) do
-        local caption = tag_to_gps_tag(tag) .. " " .. signal_id_to_rich_text(tag.icon) .. " " .. tag.text
+        local caption = signal_id_to_rich_text(tag.icon) .. " " .. tag.text
         tag_list.add_item(caption)
+        table.insert(player_gui_config.item_tags, tag)
     end
 end
 
@@ -96,11 +85,13 @@ end
 
 script.on_event(defines.events.on_gui_selection_state_changed, function(event)
     if event.element.name == "tag_list" then
-        local player = game.players[event.player_index]
-        local selected_item = event.element.get_item(event.element.selected_index)
-        local pos, surface_index = list_item_extract_gps_tag_info(selected_item)
-        if pos then
-            go_to_position(player, selected_item, pos, surface_index)
+        local player_gui_config = global.player_gui[event.player_index]
+        if player_gui_config and player_gui_config.item_tags then
+            local player = game.players[event.player_index]
+            local tag = player_gui_config.item_tags[event.element.selected_index]
+            if tag then
+                go_to_position(player, selected_item, tag.position, tag.surface.index)
+            end
         end
         event.element.selected_index = 0
     end
