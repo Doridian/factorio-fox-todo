@@ -1,6 +1,7 @@
 local M = {}
 
 local all_todo_tags_by_force = require("tags_holder")
+local filters = require("filters")
 
 local function signal_id_to_rich_text(signal_id, default)
     if not signal_id then
@@ -21,7 +22,17 @@ local function get_tag_caption(tag)
 end
 
 -- Function used for filter configuration later
-local function should_show_tag(tag)
+local function should_show_tag(player, tag, filter_names)
+    if not filter_names then
+        return true
+    end
+
+    for _, filter_name in pairs(filter_names) do
+        local func = filters.get_filter(filter_name)
+        if func and not func(player, tag) then
+            return false
+        end
+    end
     return true
 end
 
@@ -86,7 +97,7 @@ function M.render_todo_gui_player(player)
     local added_tags = {}
     local present_tags = {}
     for tag_number, tag in pairs(player_tags) do
-        if should_show_tag(tag) then
+        if should_show_tag(player, tag, player_gui_config.tag_filters) then
             if not old_tags[tag_number] then
                 added_tags[tag_number] = tag
             end
