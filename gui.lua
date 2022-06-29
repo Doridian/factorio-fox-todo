@@ -15,10 +15,12 @@ local function signal_id_to_rich_text(signal_id, default)
 end
 
 local function get_tag_caption(tag)
-    return signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") .. " " .. tag.text .. " [color=yellow]by " .. tag.last_user.name .. "[/color]"
+    return signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") ..
+                " " .. tag.text ..
+                " [color=yellow]by " .. tag.last_user.name .. "[/color]"
 end
 
-local function go_to_position(player, name, position, surface_index)
+local function go_to_position(player, location_name, position, surface_index)
     if remote.interfaces["space-exploration"] then
         local remote_view_allowed = remote.call("space-exploration", "remote_view_is_unlocked", {player=player})
         if remote_view_allowed or surface_index ~= player.surface.index then
@@ -27,7 +29,13 @@ local function go_to_position(player, name, position, surface_index)
                 player.print({"se-no-zone-for-surface"})
                 return
             end
-            remote.call("space-exploration", "remote_view_start", {player=player, position=position, zone_name=zone.name, location_name=name, freeze_history=true})
+            remote.call("space-exploration", "remote_view_start", {
+                player=player,
+                position=position,
+                zone_name=zone.name,
+                location_name=location_name,
+                freeze_history=true
+            })
             return
         end
     end
