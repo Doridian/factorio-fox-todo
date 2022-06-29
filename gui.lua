@@ -2,9 +2,9 @@ local M = {}
 
 local all_todo_tags_by_force = require("tags_holder")
 
-local function signal_id_to_rich_text(signal_id)
+local function signal_id_to_rich_text(signal_id, default)
     if not signal_id then
-        return " [img=utility/custom_tag_in_map_view] "
+        return default or ""
     end
 
     local rt_type = signal_id.type
@@ -15,7 +15,7 @@ local function signal_id_to_rich_text(signal_id)
 end
 
 local function get_tag_caption(tag)
-    return signal_id_to_rich_text(tag.icon) .. " " .. tag.text .. " [color=yellow] by " .. tag.last_user.name .. "[/color]"
+    return signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") .. " " .. tag.text .. " [color=yellow]by " .. tag.last_user.name .. "[/color]"
 end
 
 local function go_to_position(player, name, position, surface_index)
