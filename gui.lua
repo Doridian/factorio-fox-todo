@@ -20,6 +20,11 @@ local function get_tag_caption(tag)
                 " [color=yellow]by " .. tag.last_user.name .. "[/color]"
 end
 
+-- Function used for filter configuration later
+local function should_show_tag(tag)
+    return true
+end
+
 local function go_to_position(player, location_name, position, surface_index)
     if remote.interfaces["space-exploration"] then
         local remote_view_allowed = remote.call("space-exploration", "remote_view_is_unlocked", {player=player})
@@ -49,7 +54,7 @@ local function go_to_position(player, location_name, position, surface_index)
 end
 
 function M.render_todo_gui_player(player)
-    local tags = all_todo_tags_by_force[player.force.index]
+    local player_tags = all_todo_tags_by_force[player.force.index]
 
     local player_gui_config = global.player_gui[player.index]
     if not player_gui_config then
@@ -67,7 +72,7 @@ function M.render_todo_gui_player(player)
 
     local gui_tag_list = player.gui.screen.fox_todo_main_gui.tag_list
 
-    if not tags then
+    if not player_tags then
         gui_tag_list.clear_items()
         player_gui_config.item_tags = {}
         return
@@ -80,11 +85,13 @@ function M.render_todo_gui_player(player)
 
     local added_tags = {}
     local present_tags = {}
-    for tag_number, tag in pairs(tags) do
-        if not old_tags[tag_number] then
-            added_tags[tag_number] = tag
+    for tag_number, tag in pairs(player_tags) do
+        if should_show_tag(tag) then
+            if not old_tags[tag_number] then
+                added_tags[tag_number] = tag
+            end
+            present_tags[tag_number] = tag
         end
-        present_tags[tag_number] = tag
     end
 
     local new_item_tags = {}
