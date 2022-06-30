@@ -187,4 +187,19 @@ end)
 script.on_event(defines.events.on_player_joined_game, render_todo_gui_player_index_event)
 script.on_event(defines.events.on_player_changed_force, render_todo_gui_player_index_event)
 
+script.on_event(defines.events.on_player_changed_surface, function(event)
+    local player = game.players[event.player_index]
+
+    local main_gui = player.gui.screen.fox_todo_main_gui
+    if not main_gui then
+        return
+    end
+
+    if not main_gui.checkbox_frame.show_only_same_surface.state then
+        return
+    end
+
+    M.render_todo_gui_player(player)
+end)
+
 return M
