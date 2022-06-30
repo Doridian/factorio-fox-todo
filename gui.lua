@@ -97,8 +97,10 @@ function M.render_todo_gui_player(player)
     end
 
     local old_tags = {}
-    for idx, tag in pairs(player_gui_config.item_tags) do
-        old_tags[tag.tag_number] = idx
+    if player_gui_config.item_tags then
+        for idx, tag in pairs(player_gui_config.item_tags) do
+            old_tags[tag.tag_number] = idx
+        end
     end
 
     local player_filters = {}
