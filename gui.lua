@@ -65,7 +65,9 @@ function M.render_todo_gui_player(player)
 
     local player_gui_config = global.player_gui[player.index]
     if not player_gui_config then
-        player_gui_config = {}
+        player_gui_config = {
+            item_tags = {}
+        }
         global.player_gui[player.index] = player_gui_config
     end
 
@@ -97,10 +99,8 @@ function M.render_todo_gui_player(player)
     end
 
     local old_tags = {}
-    if player_gui_config.item_tags then
-        for idx, tag in pairs(player_gui_config.item_tags) do
-            old_tags[tag.tag_number] = idx
-        end
+    for idx, tag in pairs(player_gui_config.item_tags) do
+        old_tags[tag.tag_number] = idx
     end
 
     local player_filters = {}
@@ -163,7 +163,7 @@ end
 script.on_event(defines.events.on_gui_selection_state_changed, function(event)
     if event.element.name == "tag_list" then
         local player_gui_config = global.player_gui[event.player_index]
-        if player_gui_config and player_gui_config.item_tags then
+        if player_gui_config then
             local player = game.players[event.player_index]
             local tag = player_gui_config.item_tags[event.element.selected_index]
             if tag then
