@@ -1,8 +1,13 @@
 local gui = require("gui")
 local tags = require("tags")
 
+local is_initialized = false
+
 script.on_event(defines.events.on_tick, function()
-    script.on_event(defines.events.on_tick, nil)
+    if is_initialized then
+        return
+    end
+    is_initialized = true
 
     tags.find_all_tags()
 
