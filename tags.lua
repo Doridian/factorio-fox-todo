@@ -1,10 +1,11 @@
 local gui = require("gui")
 local all_todo_tags_by_force = require("tags_holder")
+local config = require("config")
 
 local M = {}
 
 local function is_tag_todo(tag)
-    return tag.text:sub(1, 4) == "TODO"
+    return tag.text:sub(1, config.tag_prefix_len) == config.tag_prefix
 end
 
 local function on_tag_added(tag, force)

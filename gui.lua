@@ -1,5 +1,6 @@
 local M = {}
 
+local config = require("config")
 local all_todo_tags_by_force = require("tags_holder")
 local filters = require("filters")
 
@@ -17,13 +18,13 @@ end
 
 local function get_tag_caption(tag)
     return signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") ..
-                " " .. tag.text ..
+                " " .. tag.text:sub(config.tag_prefix_len + 1) ..
                 " [color=yellow]by " .. tag.last_user.name .. "[/color]"
 end
 
 -- Function used for filter configuration later
-local function should_show_tag(player, tag)
-    for _, filter in pairs(filters.get_filters_for(player, true)) do
+local function should_show_tag(player, tag, filters_array)
+    for _, filter in pairs(filters_array) do
         if not filter(player, tag) then
             return false
         end
@@ -68,15 +69,26 @@ function M.render_todo_gui_player(player)
         global.player_gui[player.index] = player_gui_config
     end
 
+    local main_gui
     if not player.gui.screen.fox_todo_main_gui then
-        local main_gui = player.gui.screen.add{type="frame", name="fox_todo_main_gui", caption={"gui.todo-list-title"}}
-        main_gui.style.size = {400, 200}
+        main_gui = player.gui.screen.add{type="frame", name="fox_todo_main_gui", caption={"gui.todo-list-title"}, direction="vertical"}
         main_gui.auto_center = false
         main_gui.visible = false
+
+        local checkbox_frame = main_gui.add{type="flow", name="checkbox_frame", direction="horizontal"}
+        checkbox_frame.style.horizontal_align = "right"
+        checkbox_frame.style.horizontally_stretchable = true
+        checkbox_frame.add{type="checkbox", name="show_only_own", caption={"gui.show-only-own"}, state=false}
+        checkbox_frame.add{type="checkbox", name="show_only_same_surface", caption={"gui.show-only-same-surface"}, state=false}
+
         main_gui.add{type="list-box", name="tag_list"}
+    else
+        main_gui = player.gui.screen.fox_todo_main_gui
     end
 
-    local gui_tag_list = player.gui.screen.fox_todo_main_gui.tag_list
+    main_gui.style.size = {400, 400}
+
+    local gui_tag_list = main_gui.tag_list
 
     if not player_tags then
         gui_tag_list.clear_items()
@@ -89,10 +101,18 @@ function M.render_todo_gui_player(player)
         old_tags[tag.tag_number] = idx
     end
 
+    local player_filters = {}
+    if main_gui.checkbox_frame.show_only_own.state then
+        table.insert(player_filters, filters.own)
+    end
+    if main_gui.checkbox_frame.show_only_same_surface.state then
+        table.insert(player_filters, filters.same_surface)
+    end
+
     local added_tags = {}
     local present_tags = {}
     for tag_number, tag in pairs(player_tags) do
-        if should_show_tag(player, tag) then
+        if should_show_tag(player, tag, player_filters) then
             if not old_tags[tag_number] then
                 added_tags[tag_number] = tag
             end
@@ -150,6 +170,11 @@ script.on_event(defines.events.on_gui_selection_state_changed, function(event)
         end
         event.element.selected_index = 0
     end
+end)
+
+script.on_event(defines.events.on_gui_checked_state_changed, function(event)
+    local player = game.players[event.player_index]
+    M.render_todo_gui_player(player)
 end)
 
 script.on_event("fox-todo-toggle-gui", function(event)
