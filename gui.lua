@@ -4,6 +4,8 @@ local config = require("config")
 local all_todo_tags_by_force = require("tags_holder")
 local filters = require("filters")
 
+local GUI_VERSION = 1
+
 local function signal_id_to_rich_text(signal_id, default)
     if not signal_id then
         return default or ""
@@ -71,11 +73,52 @@ function M.render_todo_gui_player(player)
         global.player_gui[player.index] = player_gui_config
     end
 
-    local main_gui
-    if not player.gui.screen.fox_todo_main_gui then
-        main_gui = player.gui.screen.add{type="frame", name="fox_todo_main_gui", caption={"gui.todo-list-title"}, direction="vertical"}
+    local default_visibility = false
+    local default_location = nil
+    local main_gui = player.gui.screen.fox_todo_main_gui
+
+    if main_gui then
+        default_visibility = main_gui.visible
+        default_location = main_gui.location
+        if main_gui.tags.version ~= GUI_VERSION then
+            main_gui.destroy()
+            main_gui = nil
+        end
+    end
+
+    if not main_gui then
+        main_gui = player.gui.screen.add{type="frame", name="fox_todo_main_gui", direction="vertical"}
         main_gui.auto_center = false
-        main_gui.visible = false
+        main_gui.visible = default_visibility
+
+        if default_location then
+            main_gui.location = default_location
+        end
+
+        local titlebar = main_gui.add{type="flow"}
+        titlebar.drag_target = main_gui
+        titlebar.add{
+          type = "label",
+          style = "frame_title",
+          caption = {"gui.todo-list-title"},
+          ignored_by_interaction = true,
+        }
+        local filler = titlebar.add{
+          type = "empty-widget",
+          style = "draggable_space",
+          ignored_by_interaction = true,
+        }
+        filler.style.height = 24
+        filler.style.horizontally_stretchable = true
+        titlebar.add{
+          type = "sprite-button",
+          name = "todo_close_button",
+          style = "frame_action_button",
+          sprite = "utility/close_white",
+          hovered_sprite = "utility/close_black",
+          clicked_sprite = "utility/close_black",
+          tooltip = {"gui.close-instruction"},
+        }
 
         local checkbox_frame = main_gui.add{type="flow", name="checkbox_frame", direction="horizontal"}
         checkbox_frame.style.horizontal_align = "right"
@@ -84,8 +127,6 @@ function M.render_todo_gui_player(player)
         checkbox_frame.add{type="checkbox", name="show_only_same_surface", caption={"gui.show-only-same-surface"}, state=false}
 
         main_gui.add{type="list-box", name="tag_list"}
-    else
-        main_gui = player.gui.screen.fox_todo_main_gui
     end
 
     main_gui.style.size = {400, 400}
@@ -177,6 +218,13 @@ end)
 script.on_event(defines.events.on_gui_checked_state_changed, function(event)
     local player = game.players[event.player_index]
     M.render_todo_gui_player(player)
+end)
+
+script.on_event(defines.events.on_gui_click, function(event)
+    local player = game.players[event.player_index]
+    if event.element.name == "todo_close_button" then
+        player.gui.screen.fox_todo_main_gui.visible = false
+    end
 end)
 
 script.on_event("fox-todo-toggle-gui", function(event)
