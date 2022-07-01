@@ -4,7 +4,7 @@ local config = require("config")
 local all_todo_tags_by_force = require("tags_holder")
 local filters = require("filters")
 
-local GUI_VERSION = 2
+local GUI_VERSION = -1
 
 local function signal_id_to_rich_text(signal_id, default)
     if not signal_id then
@@ -89,7 +89,7 @@ function M.render_todo_gui_player(player)
             default_show_only_same_surface = checkbox_container.show_only_same_surface.state
         end
 
-        if main_gui.tags.version ~= GUI_VERSION then
+        if GUI_VERSION < 0 or main_gui.tags.version ~= GUI_VERSION then
             main_gui.destroy()
             main_gui = nil
         end
@@ -133,14 +133,20 @@ function M.render_todo_gui_player(player)
           clicked_sprite = "utility/close_black",
         }
 
-        main_gui.add{type="list-box", name="tag_list"}
+        local scroll_container = main_gui.add{type="scroll-pane", name="tag_list_container"}
+        scroll_container.style.horizontally_stretchable = true
+
+        local tag_list = scroll_container.add{type="table", name="tag_list", column_count=4}
+        tag_list.style.horizontally_stretchable = true
+        tag_list.draw_vertical_lines = true
+        tag_list.draw_horizontal_lines = true
 
         main_gui.tags.version = GUI_VERSION
     end
 
     main_gui.style.size = {400, 400}
 
-    local gui_tag_list = main_gui.tag_list
+    local gui_tag_list = main_gui.tag_list_container.tag_list
 
     if not player_tags then
         gui_tag_list.clear_items()
@@ -160,6 +166,19 @@ function M.render_todo_gui_player(player)
     if main_gui.titlebar.show_only_same_surface.state then
         table.insert(player_filters, filters.same_surface)
     end
+
+    gui_tag_list.add{type="label",caption="WOOT"}
+    gui_tag_list.add{type="label",caption="A"}
+    gui_tag_list.add{type="label",caption="B"}
+    gui_tag_list.add{type="label",caption="C"}
+    gui_tag_list.add{type="label",caption="D"}
+    gui_tag_list.add{type="label",caption="E"}
+    gui_tag_list.add{type="label",caption="F"}
+    gui_tag_list.add{type="label",caption="G"}
+    gui_tag_list.add{type="label",caption="H"}
+
+
+    --[[
 
     local added_tags = {}
     local present_tags = {}
@@ -188,6 +207,7 @@ function M.render_todo_gui_player(player)
 
     gui_tag_list.items = new_items
     player_gui_config.item_tags = new_item_tags
+    ]]
 end
 
 function M.toggle_todo_gui_player(player)
