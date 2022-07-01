@@ -1,10 +1,9 @@
 local M = {}
 
 local config = require("config")
-local all_todo_tags_by_force = require("tags_holder")
 local filters = require("filters")
 
-local GUI_VERSION = 2
+local GUI_VERSION = 3
 
 local function signal_id_to_rich_text(signal_id, default)
     if not signal_id then
@@ -63,7 +62,7 @@ local function go_to_position(player, location_name, position, surface_index)
 end
 
 function M.render_todo_gui_player(player)
-    local player_tags = all_todo_tags_by_force[player.force.index]
+    local player_tags = global.all_todo_tags_by_force[player.force.index]
 
     local player_gui_config = global.player_gui[player.index]
     if not player_gui_config then
@@ -161,29 +160,14 @@ function M.render_todo_gui_player(player)
         table.insert(player_filters, filters.same_surface)
     end
 
-    local added_tags = {}
-    local present_tags = {}
-    for tag_number, tag in pairs(player_tags) do
-        if should_show_tag(player, tag, player_filters) then
-            if not old_tags[tag_number] then
-                added_tags[tag_number] = tag
-            end
-            present_tags[tag_number] = tag
-        end
-    end
-
     local new_item_tags = {}
     local new_items = {}
-    
-    for _, tag in pairs(player_gui_config.item_tags) do
-        if present_tags[tag.tag_number] then
+
+    for tag_number, tag in pairs(player_tags) do
+        if should_show_tag(player, tag, player_filters) then
             table.insert(new_item_tags, tag)
             table.insert(new_items, get_tag_caption(tag))
         end
-    end
-    for _, tag in pairs(added_tags) do
-        table.insert(new_item_tags, tag)
-        table.insert(new_items, get_tag_caption(tag))
     end
 
     gui_tag_list.items = new_items
