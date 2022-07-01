@@ -243,4 +243,8 @@ script.on_event(defines.events.on_player_changed_surface, function(event)
     M.render_todo_gui_player(player)
 end)
 
+script.on_event(defines.events.on_player_removed, function(event)
+    global.player_gui[event.player_index] = nil
+end)
+
 return M

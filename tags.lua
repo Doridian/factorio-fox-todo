@@ -45,7 +45,7 @@ function M.cleanup_tags()
     for force_index, tags in pairs(global.all_todo_tags_by_force) do
         local force = game.forces[force_index]
 
-        if not force.valid then
+        if not (force and force.valid) then
             global.all_todo_tags_by_force[force_index] = nil
         else
             local new_tags = {}
