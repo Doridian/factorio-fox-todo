@@ -1,5 +1,4 @@
 local gui = require("gui")
-local all_todo_tags_by_force = require("tags_holder")
 local config = require("config")
 
 local M = {}
@@ -13,22 +12,22 @@ local function on_tag_added(tag, force)
         return
     end
 
-    if not all_todo_tags_by_force[force.index] then
-        all_todo_tags_by_force[force.index] = {}
+    if not global.all_todo_tags_by_force[force.index] then
+        global.all_todo_tags_by_force[force.index] = {}
     end
-    all_todo_tags_by_force[force.index][tag.tag_number] = tag
+    global.all_todo_tags_by_force[force.index][tag.tag_number] = tag
     gui.render_todo_gui_force(force)
 end
 
 local function on_tag_removed(tag, force)
-    if not all_todo_tags_by_force[force.index] then
+    if not global.all_todo_tags_by_force[force.index] then
         return
     end
 
-    if all_todo_tags_by_force[force.index][tag.tag_number] then
-        all_todo_tags_by_force[force.index][tag.tag_number] = nil
-        if not next(all_todo_tags_by_force[force.index]) then
-            all_todo_tags_by_force[force.index] = nil
+    if global.all_todo_tags_by_force[force.index][tag.tag_number] then
+        global.all_todo_tags_by_force[force.index][tag.tag_number] = nil
+        if not next(global.all_todo_tags_by_force[force.index]) then
+            global.all_todo_tags_by_force[force.index] = nil
         end
         gui.render_todo_gui_force(force)
     end
@@ -43,11 +42,11 @@ local function on_tag_modified(tag, force)
 end
 
 function M.cleanup_tags()
-    for force_index, tags in pairs(all_todo_tags_by_force) do
+    for force_index, tags in pairs(global.all_todo_tags_by_force) do
         local force = game.forces[force_index]
 
-        if not force.valid then
-            all_todo_tags_by_force[force_index] = nil
+        if not (force and force.valid) then
+            global.all_todo_tags_by_force[force_index] = nil
         else
             local new_tags = {}
             local tags_modified = false
@@ -66,7 +65,7 @@ function M.cleanup_tags()
                 if not tags_found then
                     new_tags = nil
                 end
-                all_todo_tags_by_force[force_index] = new_tags
+                global.all_todo_tags_by_force[force_index] = new_tags
                 gui.render_todo_gui_force(force)
             end
         end
@@ -89,7 +88,7 @@ function M.find_all_tags()
         end
 
         if has_tags then
-            all_todo_tags_by_force[force.index] = todo_tags
+            global.all_todo_tags_by_force[force.index] = todo_tags
         end
     end
 end
