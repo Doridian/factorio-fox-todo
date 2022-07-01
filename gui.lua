@@ -185,7 +185,7 @@ function M.toggle_todo_gui_player(player)
 end
 
 function M.render_todo_gui_force(force)
-    for _, ply in pairs(force.connected_players) do
+    for _, ply in pairs(force.players) do
         M.render_todo_gui_player(ply)
     end
 end
