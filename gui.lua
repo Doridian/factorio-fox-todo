@@ -136,10 +136,12 @@ function M.render_todo_gui_player(player)
         local scroll_container = main_gui.add{type="scroll-pane", name="tag_list_container"}
         scroll_container.style.horizontally_stretchable = true
 
-        local tag_list = scroll_container.add{type="table", name="tag_list", column_count=4}
+        local tag_list = scroll_container.add{type="table", name="tag_list", column_count=4, style="mods_table"}
+
+        tag_list.ignored_by_interaction = false
         tag_list.style.horizontally_stretchable = true
-        tag_list.draw_vertical_lines = true
-        tag_list.draw_horizontal_lines = true
+        tag_list.draw_vertical_lines = false
+        tag_list.draw_horizontal_lines = false
 
         main_gui.tags.version = GUI_VERSION
     end
@@ -167,16 +169,16 @@ function M.render_todo_gui_player(player)
         table.insert(player_filters, filters.same_surface)
     end
 
-    gui_tag_list.add{type="label",caption="WOOT"}
-    gui_tag_list.add{type="label",caption="A"}
-    gui_tag_list.add{type="label",caption="B"}
-    gui_tag_list.add{type="label",caption="C"}
-    gui_tag_list.add{type="label",caption="D"}
-    gui_tag_list.add{type="label",caption="E"}
-    gui_tag_list.add{type="label",caption="F"}
-    gui_tag_list.add{type="label",caption="G"}
-    gui_tag_list.add{type="label",caption="H"}
-
+    gui_tag_list.add{type="button",caption="WOOT",style="list_box_item"}
+    gui_tag_list.add{type="button",caption="A",style="list_box_item"}
+    gui_tag_list.add{type="button",caption="B",style="list_box_item"}
+    gui_tag_list.add{type="button",caption="C",style="list_box_item"}
+    for i = 0, 10 do
+        gui_tag_list.add{type="button",caption="E",style="slot_sized_button"}
+        gui_tag_list.add{type="button",caption="F",style="slot_sized_button"}
+        gui_tag_list.add{type="button",caption="G",style="slot_sized_button"}
+        gui_tag_list.add{type="button",caption="H",style="slot_sized_button"}
+    end
 
     --[[
 
