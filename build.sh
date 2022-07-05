@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -ex
 
 VERSION="$(git describe --tags 2> /dev/null)"
 
@@ -9,8 +9,8 @@ then
     VERSION="99.99.99"
 fi
 
-sed "s~99\\.99\\.98~$VERSION" -i info.json
-sed "s~M.version = .*$~M.version = \"$VERSION\"" -i config.lua
+sed "s~99\\.99\\.98~$VERSION~" -i info.json
+sed "s~M.version = .*$~M.version = \"$VERSION\"~" -i config.lua
 
 cat info.json
 cat config.lua
