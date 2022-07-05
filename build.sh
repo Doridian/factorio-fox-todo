@@ -26,7 +26,7 @@ rm -f "$DIST_DIR/fox-todo_$VERSION.zip"
 
 ln -s "$PROJECT_DIR" "$TMP_DIR/fox-todo"
 cd "$TMP_DIR"
-zip "$DIST_DIR/fox-todo_$VERSION.zip" -v -r './fox-todo' -x './fox-todo/.gitignore' -x './fox-todo/.git' -x './fox-todo/.git/*' -x './fox-todo/.github' -x './fox-todo/.github/*'
+zip "$DIST_DIR/fox-todo_$VERSION.zip" -v -r './fox-todo' -x './fox-todo/.gitignore' -x './fox-todo/.git' -x './fox-todo/.git/*' -x './fox-todo/.github' -x './fox-todo/.github/*' -x './fox-todo/dist' -x './fox-todo/dist/*'
 cd "$PROJECT_DIR"
 
 rm -rf "$TMP_DIR"
