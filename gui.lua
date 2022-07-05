@@ -3,6 +3,8 @@ local M = {}
 local config = require("config")
 local filters = require("filters")
 
+local ASSIGNEE_PATTERN = "@([^%s]+)"
+
 local function signal_id_to_rich_text(signal_id, default)
     if not signal_id then
         return default or ""
@@ -17,8 +19,16 @@ end
 
 local function get_tag_caption(tag)
     return signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") ..
-                " " .. tag.text:sub(config.tag_prefix_len + 1) ..
-                " [color=yellow]by " .. tag.last_user.name .. "[/color]"
+                " " .. tag.text:sub(config.tag_prefix_len + 1):gsub(ASSIGNEE_PATTERN, "") ..
+                " [color=yellow]cccby " .. tag.last_user.name .. "[/color]"
+end
+
+local function get_tag_assignee(tag)
+    local m = tag:match(ASSIGNEE_PATTERN)
+    if not m then
+        return nil     
+    end
+    return game.players[m]
 end
 
 -- Function used for filter configuration later
