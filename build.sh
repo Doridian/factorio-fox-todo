@@ -17,5 +17,8 @@ sed "s~M.version = .*$~M.version = \"$VERSION\"~" -i config.lua
 git add info.json config.lua
 git commit -m "AUTOMATED RELEASE"
 
-mkdir -p dist
-git archive HEAD --prefix=fox-todo/ --format=zip -o "dist/fox-todo_$VERSION.zip"
+mkdir -p dist/zipsrc
+ln -s . dist/zipsrc/fox-todo
+cd dist/zipsrc
+zip "../fox-todo_$VERSION.zip" -r './fox-todo' -x './fox-todo/dist' -x './fox-todo/dist/*'
+cd ../..
