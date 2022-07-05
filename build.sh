@@ -14,9 +14,6 @@ fi
 sed "s~99\\.99\\.98~$VERSION~" -i info.json
 sed "s~M.version = .*$~M.version = \"$VERSION\"~" -i config.lua
 
-git add info.json config.lua
-git commit -m "AUTOMATED RELEASE"
-
 mkdir -p dist/zipsrc
 ln -s . dist/zipsrc/fox-todo
 cd dist/zipsrc
