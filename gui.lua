@@ -42,6 +42,7 @@ local function go_to_position(player, location_name, position, surface_index)
                 player.print({"se-no-zone-for-surface"})
                 return
             end
+            player.close_map()
             remote.call("space-exploration", "remote_view_start", {
                 player=player,
                 position=position,
