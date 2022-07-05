@@ -3,8 +3,6 @@ local M = {}
 local config = require("config")
 local filters = require("filters")
 
-local GUI_VERSION = -1
-
 local function signal_id_to_rich_text(signal_id, default)
     if not signal_id then
         return default or ""
@@ -89,7 +87,7 @@ function M.render_todo_gui_player(player)
             default_show_only_same_surface = checkbox_container.show_only_same_surface.state
         end
 
-        if GUI_VERSION < 0 or main_gui.tags.version ~= GUI_VERSION then
+        if (not config.version) or main_gui.tags.version ~= config.version then
             main_gui.destroy()
             main_gui = nil
         end
@@ -143,7 +141,7 @@ function M.render_todo_gui_player(player)
         tag_list.draw_vertical_lines = false
         tag_list.draw_horizontal_lines = false
 
-        main_gui.tags.version = GUI_VERSION
+        main_gui.tags.version = config.version
     end
 
     main_gui.style.size = {400, 400}
