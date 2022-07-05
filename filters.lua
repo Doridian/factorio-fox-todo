@@ -1,4 +1,7 @@
+local util = require("util")
+
 local M = {}
+
 function M.same_surface(player, tag)
     return player.surface.index == tag.surface.index
 end
@@ -6,4 +9,10 @@ end
 function M.own(player, tag)
     return player.index == tag.last_user.index
 end
+
+function M.assigned(player, tag)
+    local assignee = util.get_tag_assignee(tag)
+    return assignee and assignee.index == player.index
+end
+
 return M
