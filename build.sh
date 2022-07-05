@@ -1,8 +1,10 @@
 #!/bin/bash
 
-set -ex
+set -x
 
 VERSION="$(git describe --tags 2> /dev/null)"
+
+set -e
 
 if [ -z "$VERSION" ]
 then
