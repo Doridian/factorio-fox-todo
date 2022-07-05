@@ -1,6 +1,6 @@
 local M = {}
 
--- Version gets inserted by build process
+-- Filled in by build process
 M.version = nil
 
 M.tag_prefix = "TODO: "

@@ -2,8 +2,7 @@ local M = {}
 
 local config = require("config")
 local filters = require("filters")
-
-local ASSIGNEE_PATTERN = "@([^%s]+)"
+local util = require("util")
 
 local function signal_id_to_rich_text(signal_id, default)
     if not signal_id then
@@ -18,17 +17,14 @@ local function signal_id_to_rich_text(signal_id, default)
 end
 
 local function get_tag_caption(tag)
-    return signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") ..
-                " " .. tag.text:sub(config.tag_prefix_len + 1):gsub(ASSIGNEE_PATTERN, "") ..
-                " [color=yellow]cccby " .. tag.last_user.name .. "[/color]"
-end
+    str = signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") ..
+                " " .. util.trim(tag.text:sub(config.tag_prefix_len + 1):gsub(util.ASSIGNEE_PATTERN, "[color=blue]@%1[/color]"))
 
-local function get_tag_assignee(tag)
-    local m = tag:match(ASSIGNEE_PATTERN)
-    if not m then
-        return nil     
+    if tag.last_user then
+        str = str .. " [color=yellow]by " .. tag.last_user.name .. "[/color]"
     end
-    return game.players[m]
+
+    return str
 end
 
 -- Function used for filter configuration later
@@ -85,6 +81,7 @@ function M.render_todo_gui_player(player)
     local default_location = nil
     local default_show_only_own = false
     local default_show_only_same_surface = false
+    local default_show_only_assigned = false
     local main_gui = player.gui.screen.fox_todo_main_gui
 
     if main_gui then
@@ -95,6 +92,9 @@ function M.render_todo_gui_player(player)
         if checkbox_container then
             default_show_only_own = checkbox_container.show_only_own.state
             default_show_only_same_surface = checkbox_container.show_only_same_surface.state
+            if checkbox_container.show_only_assigned then
+                default_show_only_assigned = checkbox_container.show_only_assigned.state
+            end
         end
 
         if (not config.version) or main_gui.tags.version ~= config.version then
@@ -131,6 +131,7 @@ function M.render_todo_gui_player(player)
 
         titlebar.add{type="checkbox", name="show_only_own", caption={"gui.show-only-own"}, state=default_show_only_own}
         titlebar.add{type="checkbox", name="show_only_same_surface", caption={"gui.show-only-same-surface"}, state=default_show_only_same_surface}
+        titlebar.add{type="checkbox", name="show_only_assigned", caption={"gui.show-only-assigned"}, state=default_show_only_assigned}
 
         titlebar.add{
           type = "sprite-button",
@@ -175,6 +176,9 @@ function M.render_todo_gui_player(player)
     end
     if main_gui.titlebar.show_only_same_surface.state then
         table.insert(player_filters, filters.same_surface)
+    end
+    if main_gui.titlebar.show_only_assigned.state then
+        table.insert(player_filters, filters.assigned)
     end
 
     gui_tag_list.add{type="button",caption="WOOT",style="list_box_item"}
