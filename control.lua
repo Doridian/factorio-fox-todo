@@ -1,2 +1,3 @@
-local gui = require("gui")
-local tags = require("tags")
+require("initializer")
+require("gui")
+require("tags")

@@ -90,6 +90,8 @@ function M.find_all_tags()
         if has_tags then
             global.all_todo_tags_by_force[force.index] = todo_tags
         end
+
+        gui.render_todo_gui_force(force)
     end
 end
 
