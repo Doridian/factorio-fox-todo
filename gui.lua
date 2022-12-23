@@ -194,7 +194,9 @@ function M.toggle_todo_gui_player(player)
         return M.render_todo_gui_player(player)
     end
 
-    player.gui.screen.fox_todo_main_gui.visible = not player.gui.screen.fox_todo_main_gui.visible
+    show_gui = not player.gui.screen.fox_todo_main_gui.visible
+    player.set_shortcut_toggled("fox-todo-toggle-gui", show_gui)
+    player.gui.screen.fox_todo_main_gui.visible = show_gui
 end
 
 function M.render_todo_gui_force(force)
@@ -234,6 +236,14 @@ script.on_event(defines.events.on_gui_click, function(event)
 end)
 
 script.on_event("fox-todo-toggle-gui", function(event)
+    local player = game.players[event.player_index]
+    M.toggle_todo_gui_player(player)
+end)
+
+script.on_event(defines.events.on_lua_shortcut, function(event)
+    if event.prototype_name ~= "fox-todo-toggle-gui" then
+        return
+    end
     local player = game.players[event.player_index]
     M.toggle_todo_gui_player(player)
 end)
