@@ -173,15 +173,38 @@ function M.render_todo_gui_player(player)
         table.insert(player_filters, filters.assigned)
     end
 
+
     local new_item_tags = {}
     local new_items = {}
-
+    
+    -- Temporary table to store items along with their indices
+    local temp_table = {}
+    
+    -- Populate new_item_tags and new_items
     for tag_number, tag in pairs(player_tags) do
         if should_show_tag(player, tag, player_filters) then
             table.insert(new_item_tags, tag)
             table.insert(new_items, get_tag_caption(tag))
+            -- Store item and its index in the temporary table
+            table.insert(temp_table, {item = get_tag_caption(tag), index = #new_items})
         end
     end
+    
+    -- Sort the temporary table based on items
+    table.sort(temp_table, function(a, b) return a.item < b.item end)
+    
+    -- Rearrange new_items and new_item_tags based on sorted indices
+    local sorted_new_items = {}
+    local sorted_new_item_tags = {}
+    for i = 1, #temp_table do
+        local index = temp_table[i].index
+        table.insert(sorted_new_items, new_items[index])
+        table.insert(sorted_new_item_tags, new_item_tags[index])
+    end
+    
+    -- Update new_items and new_item_tags with sorted values
+    new_items = sorted_new_items
+    new_item_tags = sorted_new_item_tags
 
     gui_tag_list.items = new_items
     player_gui_config.item_tags = new_item_tags
