@@ -27,6 +27,10 @@ local function get_tag_caption(tag)
     return str
 end
 
+local function sort_tags(a, b)
+    return a.text < b.text
+end
+
 -- Function used for filter configuration later
 local function should_show_tag(player, tag, filters_array)
     for _, filter in pairs(filters_array) do
@@ -157,11 +161,6 @@ function M.render_todo_gui_player(player)
         return
     end
 
-    local old_tags = {}
-    for idx, tag in pairs(player_gui_config.item_tags) do
-        old_tags[tag.tag_number] = idx
-    end
-
     local player_filters = {}
     if main_gui.titlebar.show_only_own.state then
         table.insert(player_filters, filters.own)
@@ -174,13 +173,17 @@ function M.render_todo_gui_player(player)
     end
 
     local new_item_tags = {}
-    local new_items = {}
-
-    for tag_number, tag in pairs(player_tags) do
+    for _, tag in pairs(player_tags) do
         if should_show_tag(player, tag, player_filters) then
             table.insert(new_item_tags, tag)
-            table.insert(new_items, get_tag_caption(tag))
         end
+    end
+
+    table.sort(new_item_tags, sort_tags)
+
+    local new_items = {}
+    for _, tag in pairs(new_item_tags) do
+        table.insert(new_items, get_tag_caption(tag))
     end
 
     gui_tag_list.items = new_items
