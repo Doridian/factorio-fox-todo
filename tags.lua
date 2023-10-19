@@ -72,26 +72,34 @@ function M.cleanup_tags()
     end
 end
 
-function M.find_all_tags()
-    for _, force in pairs(game.forces) do
-        local todo_tags = {}
-        local has_tags = false
+function M.refresh_force_tags(force)
+    local todo_tags = {}
+    local has_tags = false
 
-        for _, surface in pairs(game.surfaces) do
-            local tags = force.find_chart_tags(surface)
-            for _, tag in pairs(tags) do
-                if is_tag_todo(tag) then
-                    todo_tags[tag.tag_number] = tag
-                    has_tags = true
-                end
+    for _, surface in pairs(game.surfaces) do
+        local tags = force.find_chart_tags(surface)
+        for _, tag in pairs(tags) do
+            if is_tag_todo(tag) then
+                todo_tags[tag.tag_number] = tag
+                has_tags = true
             end
         end
+    end
 
-        if has_tags then
-            global.all_todo_tags_by_force[force.index] = todo_tags
-        end
+    if has_tags then
+        global.all_todo_tags_by_force[force.index] = todo_tags
+    else
+        global.all_todo_tags_by_force[force.index] = nil
+    end
 
-        gui.render_todo_gui_force(force)
+    gui.render_todo_gui_force(force)
+end
+
+function M.refresh_all_tags()
+    global.all_todo_tags_by_force = {}
+
+    for _, force in pairs(game.forces) do
+        M.refresh_force_tags(force)
     end
 end
 
@@ -107,9 +115,16 @@ script.on_event(defines.events.on_chart_tag_modified, function(event)
     on_tag_modified(event.tag, event.force)
 end)
 
+script.on_event(defines.events.on_force_reset, function(event)
+    M.refresh_force_tags(event.force)
+end)
+
+script.on_event(defines.events.on_forces_merged, function(event)
+    global.all_todo_tags_by_force[event.source_index] = nil
+    M.refresh_force_tags(event.destination)
+end)
+
 script.on_event(defines.events.on_surface_cleared, M.cleanup_tags)
 script.on_event(defines.events.on_surface_deleted, M.cleanup_tags)
-script.on_event(defines.events.on_force_reset, M.cleanup_tags)
-script.on_event(defines.events.on_forces_merged, M.cleanup_tags)
 
 return M
