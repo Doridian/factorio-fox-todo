@@ -7,6 +7,9 @@ function M.same_surface(player, tag)
 end
 
 function M.own(player, tag)
+    if not tag.last_user then
+        return false
+    end
     return player.index == tag.last_user.index
 end
 
