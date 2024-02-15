@@ -18,7 +18,7 @@ end
 
 local function get_tag_caption(tag)
     str = signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") ..
-                " " .. util.trim(tag.text:sub(config.tag_prefix_len + 1):gsub(util.ASSIGNEE_PATTERN, "[color=blue]@%1[/color]"))
+                " " .. util.trim(tag.text:gsub("TODO:?", ""):gsub(util.ASSIGNEE_PATTERN, "[color=blue]@%1[/color]"))
 
     if tag.last_user then
         str = str .. " [color=yellow]by " .. tag.last_user.name .. "[/color]"
@@ -235,6 +235,7 @@ script.on_event(defines.events.on_gui_click, function(event)
     local player = game.players[event.player_index]
     if event.element.name == "todo_close_button" then
         player.gui.screen.fox_todo_main_gui.visible = false
+        player.set_shortcut_toggled("fox-todo-toggle-gui", false)
     end
 end)
 

@@ -4,7 +4,7 @@ local config = require("config")
 local M = {}
 
 local function is_tag_todo(tag)
-    return tag.text:sub(1, config.tag_prefix_len) == config.tag_prefix
+    return tag.text:find("TODO") ~= nil
 end
 
 local function on_tag_added(tag, force)
