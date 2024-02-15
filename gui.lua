@@ -18,7 +18,7 @@ end
 
 local function get_tag_caption(tag)
     str = signal_id_to_rich_text(tag.icon, " [img=utility/custom_tag_in_map_view] ") ..
-                " " .. util.trim(tag.text:gsub("TODO:?", ""):gsub(util.ASSIGNEE_PATTERN, "[color=blue]@%1[/color]"))
+                " " .. util.trim(tag.text:gsub("^TODO:?", ""):gsub(util.ASSIGNEE_PATTERN, "[color=blue]@%1[/color]"))
 
     if tag.last_user then
         str = str .. " [color=yellow]by " .. tag.last_user.name .. "[/color]"
