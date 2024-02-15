@@ -1,0 +1,9 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: ??.02.2024
+  Changes:
+    - Update by stringweasel
+    - Add thumbnail
+    - Add changelog (not backfilling previous entries).
+    - Map tags now only need to contain the keyword "TODO".
+    - Closing the TODO GUI will now untoggle the shortcut.
