@@ -7,38 +7,45 @@ Date: 15.02.2024
     - Add changelog (not backfilling previous entries).
     - Map tags now only need to contain the keyword "TODO".
     - Closing the TODO GUI will now untoggle the shortcut.
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.2
 Date: 15.02.2023
   Changes:
     - Fix Own filter crash for tags that have no owner
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.2.1
 Date: 18.10.2023
   Changes:
     - Sort tags alphabetically
     - Add commands to force refresh tags /refresh-all-todo-tags (admin-only) and /refresh-my-todo-tags for only you(r force)
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.4
 Date: 23.12.2022
   Changes:
     - Add icon for shortcut bar
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.3
 Date: 06.07.2022
   Changes:
     - Only run expensive init code when mod version changed
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.2
 Date: 06.07.2022
   Changes:
     - Fix crash on new game
     - Handle updates to mod better w/r/t GUI recreation
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.1
 Date: 05.07.2022
   Changes:
     - Minor improvemnts to CI process
+
 ---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 05.07.2022
