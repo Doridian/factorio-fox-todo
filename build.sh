@@ -38,7 +38,9 @@ rm -rf "$TMP_DIR"
 # Upload to mod portal
 if [ $DO_RELEASE -eq 1 ]
 then
+    set +x
     UPLOAD_RES="$(curl -sf -H "Authorization: Bearer $UPLOAD_API_KEY" 'https://mods.factorio.com/api/v2/mods/releases/init_upload' -F 'mod=fox-todo')"
     UPLOAD_URL="$(echo "$UPLOAD_RES" | jq -r .upload_url)"
     curl -sf "$UPLOAD_URL" -F "file=@$OUTPUT_ZIP"
+    set -x
 fi
