@@ -6,6 +6,10 @@ local TRIM_PATTERN_2 = "%s+$"
 local ASSIGNEE_PATTERN = "@([^%s]+)"
 M.ASSIGNEE_PATTERN = ASSIGNEE_PATTERN
 
+function M.is_valid_tag(tag)
+    return tag and tag.valid
+end
+
 function M.trim(str)
     return str:gsub(TRIM_PATTERN_1, ""):gsub(TRIM_PATTERN_2, "")
 end

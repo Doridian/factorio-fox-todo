@@ -1,14 +1,19 @@
 local gui = require("gui")
 local config = require("config")
+local util = require("util")
 
 local M = {}
 
 local function is_tag_todo(tag)
+    if not util.is_valid_tag(tag) then
+        return false
+    end
+
     return tag.text:find("^TODO") ~= nil
 end
 
 local function on_tag_added(tag, force)
-    if not is_tag_todo(tag) then
+    if not util.is_valid_tag(tag) then
         return
     end
 
@@ -54,7 +59,7 @@ function M.cleanup_tags()
 
             for idx, tag in pairs(tags) do
                 tags_found = true
-                if tag.valid then
+                if is_tag_todo(tag) then
                     new_tags[idx] = true
                 else
                     tags_modified = true
