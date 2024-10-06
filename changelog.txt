@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.3.1
+Version: 0.3.2
 Date: 05.10.2024
   Changes:
     - Fix bug where if tags turn into invalid tags this might cause crashes (such as via the alert-toggler mod)
