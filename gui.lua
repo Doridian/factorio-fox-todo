@@ -33,6 +33,10 @@ end
 
 -- Function used for filter configuration later
 local function should_show_tag(player, tag, filters_array)
+    if (not tag) or (not tag.valid) then
+        return false
+    end
+
     for _, filter in pairs(filters_array) do
         if not filter(player, tag) then
             return false
