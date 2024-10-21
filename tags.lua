@@ -13,26 +13,26 @@ local function is_tag_todo(tag)
 end
 
 local function on_tag_added(tag, force)
-    if not util.is_valid_tag(tag) then
+    if not is_tag_todo(tag) then
         return
     end
 
-    if not global.all_todo_tags_by_force[force.index] then
-        global.all_todo_tags_by_force[force.index] = {}
+    if not storage.all_todo_tags_by_force[force.index] then
+        storage.all_todo_tags_by_force[force.index] = {}
     end
-    global.all_todo_tags_by_force[force.index][tag.tag_number] = tag
+    storage.all_todo_tags_by_force[force.index][tag.tag_number] = tag
     gui.render_todo_gui_force(force)
 end
 
 local function on_tag_removed(tag, force)
-    if not global.all_todo_tags_by_force[force.index] then
+    if not storage.all_todo_tags_by_force[force.index] then
         return
     end
 
-    if global.all_todo_tags_by_force[force.index][tag.tag_number] then
-        global.all_todo_tags_by_force[force.index][tag.tag_number] = nil
-        if not next(global.all_todo_tags_by_force[force.index]) then
-            global.all_todo_tags_by_force[force.index] = nil
+    if storage.all_todo_tags_by_force[force.index][tag.tag_number] then
+        storage.all_todo_tags_by_force[force.index][tag.tag_number] = nil
+        if not next(storage.all_todo_tags_by_force[force.index]) then
+            storage.all_todo_tags_by_force[force.index] = nil
         end
         gui.render_todo_gui_force(force)
     end
@@ -47,11 +47,11 @@ local function on_tag_modified(tag, force)
 end
 
 function M.cleanup_tags()
-    for force_index, tags in pairs(global.all_todo_tags_by_force) do
+    for force_index, tags in pairs(storage.all_todo_tags_by_force) do
         local force = game.forces[force_index]
 
         if not (force and force.valid) then
-            global.all_todo_tags_by_force[force_index] = nil
+            storage.all_todo_tags_by_force[force_index] = nil
         else
             local new_tags = {}
             local tags_modified = false
@@ -70,7 +70,7 @@ function M.cleanup_tags()
                 if not tags_found then
                     new_tags = nil
                 end
-                global.all_todo_tags_by_force[force_index] = new_tags
+                storage.all_todo_tags_by_force[force_index] = new_tags
                 gui.render_todo_gui_force(force)
             end
         end
@@ -92,16 +92,16 @@ function M.refresh_force_tags(force)
     end
 
     if has_tags then
-        global.all_todo_tags_by_force[force.index] = todo_tags
+        storage.all_todo_tags_by_force[force.index] = todo_tags
     else
-        global.all_todo_tags_by_force[force.index] = nil
+        storage.all_todo_tags_by_force[force.index] = nil
     end
 
     gui.render_todo_gui_force(force)
 end
 
 function M.refresh_all_tags()
-    global.all_todo_tags_by_force = {}
+    storage.all_todo_tags_by_force = {}
 
     for _, force in pairs(game.forces) do
         M.refresh_force_tags(force)
@@ -125,7 +125,7 @@ script.on_event(defines.events.on_force_reset, function(event)
 end)
 
 script.on_event(defines.events.on_forces_merged, function(event)
-    global.all_todo_tags_by_force[event.source_index] = nil
+    storage.all_todo_tags_by_force[event.source_index] = nil
     M.refresh_force_tags(event.destination)
 end)
 

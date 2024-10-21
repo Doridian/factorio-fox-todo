@@ -4,15 +4,15 @@ local tags = require("tags")
 local M = {}
 
 function M.initialize_mod()
-    if config.version and (global.mod_version == config.version) then
+    if config.version and (storage.mod_version == config.version) then
         return
     end
 
-    global.player_gui = global.player_gui or {}
+    storage.player_gui = storage.player_gui or {}
 
     tags.refresh_all_tags()
 
-    global.mod_version = config.version
+    storage.mod_version = config.version
 end
 
 script.on_init(M.initialize_mod)

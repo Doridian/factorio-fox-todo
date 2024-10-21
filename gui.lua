@@ -75,14 +75,14 @@ local function go_to_position(player, location_name, position, surface_index)
 end
 
 function M.render_todo_gui_player(player)
-    local player_tags = global.all_todo_tags_by_force[player.force.index]
+    local player_tags = storage.all_todo_tags_by_force[player.force.index]
 
-    local player_gui_config = global.player_gui[player.index]
+    local player_gui_config = storage.player_gui[player.index]
     if not player_gui_config then
         player_gui_config = {
             item_tags = {}
         }
-        global.player_gui[player.index] = player_gui_config
+        storage.player_gui[player.index] = player_gui_config
     end
 
     local default_visibility = false
@@ -145,7 +145,7 @@ function M.render_todo_gui_player(player)
           type = "sprite-button",
           name = "todo_close_button",
           style = "frame_action_button",
-          sprite = "utility/close_white",
+          sprite = "utility/close",
           hovered_sprite = "utility/close_black",
           clicked_sprite = "utility/close_black",
         }
@@ -195,7 +195,7 @@ function M.render_todo_gui_player(player)
 end
 
 function M.toggle_todo_gui_player(player)
-    local player_gui_config = global.player_gui[player.index]
+    local player_gui_config = storage.player_gui[player.index]
     
     if not player.gui.screen.fox_todo_main_gui then
         return M.render_todo_gui_player(player)
@@ -218,7 +218,7 @@ end
 
 script.on_event(defines.events.on_gui_selection_state_changed, function(event)
     if event.element.name == "tag_list" then
-        local player_gui_config = global.player_gui[event.player_index]
+        local player_gui_config = storage.player_gui[event.player_index]
         if player_gui_config then
             local player = game.players[event.player_index]
             local tag = player_gui_config.item_tags[event.element.selected_index]
@@ -275,7 +275,7 @@ script.on_event(defines.events.on_player_changed_surface, function(event)
 end)
 
 script.on_event(defines.events.on_player_removed, function(event)
-    global.player_gui[event.player_index] = nil
+    storage.player_gui[event.player_index] = nil
 end)
 
 return M
