@@ -2,7 +2,7 @@
 
 set -x
 
-VERSION="$(git describe --tags 2> /dev/null)"
+VERSION="$(git describe --tags --exact-match 2> /dev/null)"
 DO_RELEASE=1
 
 set -e
