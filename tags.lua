@@ -13,7 +13,7 @@ local function is_tag_todo(tag)
 end
 
 local function on_tag_added(tag, force)
-    if not util.is_valid_tag(tag) then
+    if not is_tag_todo(tag) then
         return
     end
 
