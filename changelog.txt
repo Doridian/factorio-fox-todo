@@ -1,4 +1,23 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.1
+Date: 22.10.2024
+  Changes:
+    - Fix bug where opening a TODO tag on the map always causes an error
+    - Fix bug where certain icons used in a TODO tag always cause an error
+
+---------------------------------------------------------------------------------------------------
+Version: 2.0.0
+Date: 21.10.2024
+  Changes:
+    - Update for Factorio 2.0 release (Space Age)
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.3
+Date: 21.10.2024
+  Changes:
+    - Fix bug where sometimes non-TODO tags might get added to the list
+
+---------------------------------------------------------------------------------------------------
 Version: 0.3.2
 Date: 05.10.2024
   Changes:
