@@ -9,7 +9,7 @@ local function signal_id_to_rich_text(signal_id, default)
         return default or ""
     end
 
-    local rt_type = signal_id.type
+    local rt_type = signal_id.type or "item"
     if rt_type == "virtual" then
         rt_type = "virtual-signal"
     end
@@ -66,12 +66,7 @@ local function go_to_position(player, location_name, position, surface_index)
         end
     end
 
-    if surface_index ~= player.surface.index then
-        player.print({"require-same-surface-map"})
-        return
-    end
-
-    player.open_map(position)
+    player.set_controller({type = defines.controllers.remote, position = position, surface = surface_index})
 end
 
 function M.render_todo_gui_player(player)
