@@ -45,25 +45,44 @@ local function should_show_tag(player, tag, filters_array)
     return true
 end
 
+local function try_se_remote_view(player, location_name, position, surface_index)
+    if not remote.interfaces["space-exploration"] then
+        return false
+    end
+
+    if not player.mod_settings["fox-todo-use-se-remote-view"].value then
+        return false
+    end
+
+    if not remote.call("space-exploration", "remote_view_is_unlocked", {player=player}) then
+        return false
+    end
+
+    if (not player.mod_settings["fox-todo-use-se-remote-view-same-surface"].value) and
+        surface_index == player.surface.index then
+
+        return false
+    end
+
+    local zone = remote.call("space-exploration", "get_zone_from_surface_index", {surface_index=surface_index})
+    if not zone then
+        player.print({"se-no-zone-for-surface"})
+        return false
+    end
+
+    remote.call("space-exploration", "remote_view_start", {
+        player=player,
+        position=position,
+        zone_name=zone.name,
+        location_name=location_name,
+        freeze_history=true
+    })
+    return true
+end
+
 local function go_to_position(player, location_name, position, surface_index)
-    if remote.interfaces["space-exploration"] then
-        local remote_view_allowed = remote.call("space-exploration", "remote_view_is_unlocked", {player=player})
-        if remote_view_allowed or surface_index ~= player.surface.index then
-            local zone = remote.call("space-exploration", "get_zone_from_surface_index", {surface_index=surface_index})
-            if not zone then
-                player.print({"se-no-zone-for-surface"})
-                return
-            end
-            player.close_map()
-            remote.call("space-exploration", "remote_view_start", {
-                player=player,
-                position=position,
-                zone_name=zone.name,
-                location_name=location_name,
-                freeze_history=true
-            })
-            return
-        end
+    if try_se_remote_view(player, location_name, position, surface_index) then
+        return
     end
 
     player.set_controller({type = defines.controllers.remote, position = position, surface = surface_index})
