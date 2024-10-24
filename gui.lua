@@ -45,7 +45,7 @@ local function should_show_tag(player, tag, filters_array)
     return true
 end
 
-local function try_se_remote_view(player, location_name, position, surface_index)
+local function go_to_position_try_se(player, location_name, position, surface_index)
     if not remote.interfaces["space-exploration"] then
         return false
     end
@@ -81,7 +81,7 @@ local function try_se_remote_view(player, location_name, position, surface_index
 end
 
 local function go_to_position(player, location_name, position, surface_index)
-    if try_se_remote_view(player, location_name, position, surface_index) then
+    if go_to_position_try_se(player, location_name, position, surface_index) then
         return
     end
 
