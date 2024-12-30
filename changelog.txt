@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------------------------------------
-Version: 2.1.2
+Version: 2.1.3
 Date: 29.12.2024
   Changes:
-    - Fix potential crashes on or after surface deletion (If you experience crashes, run /refresh-all-todo-tags)
+    - Fix potential crashes on or after surface deletion
 
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.0
