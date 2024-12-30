@@ -60,7 +60,7 @@ function M.cleanup_tags()
             for idx, tag in pairs(tags) do
                 tags_found = true
                 if is_tag_todo(tag) then
-                    new_tags[idx] = true
+                    new_tags[idx] = tag
                 else
                     tags_modified = true
                 end
