@@ -31,7 +31,7 @@ rm -f "$OUTPUT_ZIP"
 # Link for the ZIP structure to be fox-todo/.... as Factorio requires
 ln -s "$PROJECT_DIR" "$TMP_DIR/fox-todo"
 cd "$TMP_DIR"
-zip "$OUTPUT_ZIP" -v -r './fox-todo' -x './fox-todo/.gitignore' -x './fox-todo/.git' -x './fox-todo/.git/*' -x './fox-todo/.github' -x './fox-todo/.github/*' -x './fox-todo/dist' -x './fox-todo/dist/*'
+zip "$OUTPUT_ZIP" -v -r './fox-todo' -x './fox-todo/*.sh' -x './fox-todo/.gitignore' -x './fox-todo/.git' -x './fox-todo/.git/*' -x './fox-todo/.github' -x './fox-todo/.github/*' -x './fox-todo/dist' -x './fox-todo/dist/*'
 cd "$PROJECT_DIR"
 rm -rf "$TMP_DIR"
 
